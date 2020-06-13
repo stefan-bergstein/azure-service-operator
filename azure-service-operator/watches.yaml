@@ -1,0 +1,10 @@
+---
+- version: v1alpha1
+  group: aso.example.org
+  kind: Postgresql
+  manageStatus: false
+  role: postgresql
+  finalizer:
+    name: finalizer.aso.example.org
+    vars:
+      state: absent

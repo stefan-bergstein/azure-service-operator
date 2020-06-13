@@ -1,0 +1,24 @@
+---
+# tasks file for postgresql
+- debug:
+    msg: "Hello World: name: {{ meta.name }}, {{ meta.namespace }}"
+
+- name: Create resource group
+  azure_rm_resourcegroup:
+    name: ansible-rg-{{ meta.name }}
+    location: eastus
+    state: "{{ state | default('present') }}"
+  register: rg
+
+- debug:
+    var: rg
+
+
+- k8s_status:
+    api_version: aso.example.org/v1alpha1
+    kind: Postgresql
+    name: "{{ meta.name }}"
+    namespace: "{{ meta.namespace }}"
+    status:
+      whoami: "Name: {{ meta.name }} - Namespace{{ meta.namespace }}"
+

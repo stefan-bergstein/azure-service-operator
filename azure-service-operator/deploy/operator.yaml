@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-service-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: azure-service-operator
+  template:
+    metadata:
+      labels:
+        name: azure-service-operator
+    spec:
+      serviceAccountName: azure-service-operator
+      containers:
+        - name: azure-service-operator
+          # Replace this with the built image name
+          image: "quay.io/sbergste/azure-service-operator:v0.0.1"
+          imagePullPolicy: "Always"
+          volumeMounts:
+          - mountPath: /tmp/ansible-operator/runner
+            name: runner
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "azure-service-operator"
+            - name: ANSIBLE_GATHERING
+              value: explicit
+            # Azure config        
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AZURE_CLIENT_ID
+                  name: azure-service-operator-azure-conf
+            - name: AZURE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: AZURE_SECRET
+                  name: azure-service-operator-azure-conf
+            - name: AZURE_SUBSCRIPTION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AZURE_SUBSCRIPTION_ID
+                  name: azure-service-operator-azure-conf
+            - name: AZURE_TENANT
+              valueFrom:
+                secretKeyRef:
+                  key: AZURE_TENANT
+                  name: azure-service-operator-azure-conf
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 6789
+            initialDelaySeconds: 60
+            periodSeconds: 10
+      volumes:
+        - name: runner
+          emptyDir: {}

@@ -1,0 +1,11 @@
+---
+# defaults file for postgresql
+
+size: 1
+state: present
+
+# Just for local testing
+meta:
+  name: test-name
+  namespace: test-namespace
+

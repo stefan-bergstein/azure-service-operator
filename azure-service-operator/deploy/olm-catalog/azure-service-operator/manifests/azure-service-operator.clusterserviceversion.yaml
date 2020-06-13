@@ -1,0 +1,174 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "aso.example.org/v1alpha1",
+          "kind": "Postgresql",
+          "metadata": {
+            "name": "example-postgresql"
+          },
+          "spec": {
+            "size": 1
+          }
+        }
+      ]
+    capabilities: Basic Install
+  name: azure-service-operator.v0.0.1
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - kind: Postgresql
+      displayName: Azure Database for PostgreSQL
+      name: postgresqls.aso.example.org
+      description: Azure Database for PostgreSQL CRD
+      version: v1alpha1
+  description: Simple Ansible Operator for Azure Services
+  displayName: Azure Services Operator
+  install:
+    spec:
+      deployments:
+      - name: azure-service-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: azure-service-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: azure-service-operator
+            spec:
+              containers:
+              - env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: azure-service-operator
+                - name: ANSIBLE_GATHERING
+                  value: explicit
+                image: quay.io/sbergste/azure-service-operator:v0.0.1
+                imagePullPolicy: Always
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 6789
+                  initialDelaySeconds: 60
+                  periodSeconds: 10
+                name: azure-service-operator
+                resources: {}
+                volumeMounts:
+                - mountPath: /tmp/ansible-operator/runner
+                  name: runner
+              serviceAccountName: azure-service-operator
+              volumes:
+              - emptyDir: {}
+                name: runner
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - services/finalizers
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - azure-service-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - aso.example.org
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: azure-service-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: false
+    type: AllNamespaces
+  keywords:
+  - ansible
+  - azure
+  links:
+  - name: Azure Services Operator
+    url: https://github.com/stefan-bergstein/azure-service-operator
+  maturity: alpha
+  provider:
+    name: stefanb
+  version: 0.0.1
