@@ -1,11 +1,22 @@
 ---
-# defaults file for postgresql
-
-size: 1
-state: present
-
 # Just for local testing
 meta:
   name: test-name
   namespace: test-namespace
+
+
+#
+# defaults file for postgresql
+#
+
+resource_group: postgresql-rg-{{meta.name}}
+location: westeurope
+postgresqlserver_name: postgresql-{{meta.name}}
+postgresqldb_name: sqldbtest
+admin_username: admxyz
+admin_password: Abcpasswordxyz12!
+
+state: present
+
+fully_qualified_domain_name: na
 

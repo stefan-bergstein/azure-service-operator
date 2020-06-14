@@ -4,7 +4,7 @@ metadata:
   name: azure-service-operator-catalog
 spec:
   sourceType: grpc
-  image: quay.io/sbergste/azure-service-operator-index:v0.0.1
+  image: quay.io/sbergste/azure-service-operator-index:v0.0.3
   displayName: Azure Service Operator Catalog
   publisher: StefanB
 

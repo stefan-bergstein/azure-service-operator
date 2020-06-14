@@ -3,6 +3,6 @@ kind: Postgresql
 metadata:
   name: example-postgresql
 spec:
-  # Add fields here
-
+  location: westeurope
+  postgresqldb_name: sqldbtest
 

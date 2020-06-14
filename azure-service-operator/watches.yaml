@@ -2,7 +2,7 @@
 - version: v1alpha1
   group: aso.example.org
   kind: Postgresql
-  manageStatus: false
+#  manageStatus: false
   role: postgresql
   finalizer:
     name: finalizer.aso.example.org

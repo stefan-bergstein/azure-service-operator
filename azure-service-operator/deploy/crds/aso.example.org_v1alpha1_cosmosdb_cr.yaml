@@ -1,0 +1,8 @@
+apiVersion: aso.example.org/v1alpha1
+kind: Cosmosdb
+metadata:
+  name: example-cosmosdb
+spec:
+  location: westeurope
+  postgresqldb_name: cosmosdbtest
+

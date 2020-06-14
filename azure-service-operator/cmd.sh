@@ -17,18 +17,27 @@ oc create -f deploy/role.yaml
 oc create -f deploy/role_binding.yaml
 oc create -f deploy/operator.yaml
 
-
 ;;
 
 
 bundle)
 
-ver=v0.0.6
+ver=v0.0.3
+echo "bundle create ..."
 operator-sdk bundle create quay.io/sbergste/azure-service-operator-catalog --channels alpha --package azure-service-operator-catalog --directory deploy/olm-catalog/azure-service-operator/manifests/
 docker tag quay.io/sbergste/azure-service-operator-catalog:latest quay.io/sbergste/azure-service-operator-catalog:${ver}
 docker push quay.io/sbergste/azure-service-operator-catalog:${ver}
+
+echo "add to index ..."
 opm index add -c docker --bundles quay.io/sbergste/azure-service-operator-catalog:${ver} --tag quay.io/sbergste/azure-service-operator-index:${ver}
 docker push quay.io/sbergste/azure-service-operator-index:${ver}
+
+
+oc delete CatalogSource azure-service-operator-catalog -n openshift-marketplace
+sed -i  "s|quay.io/sbergste/azure-service-operator-index:.*|quay.io/sbergste/azure-service-operator-index:${ver}|"  deploy/catalogsource.yaml
+oc apply -f deploy/catalogsource.yaml -n openshift-marketplace
+
+
 ;;
 
 *)
