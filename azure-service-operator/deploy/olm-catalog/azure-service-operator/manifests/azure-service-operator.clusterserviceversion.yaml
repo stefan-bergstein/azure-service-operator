@@ -39,7 +39,6 @@ metadata:
         }
       ]
     capabilities: Basic Install
-
     certified: "false"
     containerImage: Simple Ansible Operator for Azure Services
     description: Simple Ansible Operator for Azure Services
@@ -67,8 +66,12 @@ spec:
       name: cosmosdbs.aso.example.org
       description: Azure CosmosDB CRD
       version: v1alpha1
-  description: Simple Ansible Operator for Azure Services
   displayName: Azure Services Operator
+  description: |
+    ## Simple Ansible Operator for Azure Services
+    Why yet another Operator for Azure services? The Azure team develops [Azure Service Operator](https://github.com/Azure/azure-service-operator) that allows you to create Azure resources using kubectl.   
+This Ansible based operator should show the simplicity of building an operator for external services and having the freedom for easy customization to address your workflow requirements by changing the Ansible roles.
+
   icon:
     - base64data: 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
       mediatype: "image/png"
