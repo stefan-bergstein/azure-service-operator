@@ -12,13 +12,12 @@ kind: OperatorSource
 metadata:
   name: azure-service-operators
 spec:
-
   displayName: Azure Service Operators
   endpoint: https://quay.io/cnr
+  
   publisher: StefanB
-
+  registryNamespace: sbergste
   type: appregistry
-  endpoint: https://quay.io/cnr
 
 EOS
 ```
