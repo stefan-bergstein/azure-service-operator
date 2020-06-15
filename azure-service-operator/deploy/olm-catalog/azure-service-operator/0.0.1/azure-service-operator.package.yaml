@@ -1,0 +1,5 @@
+packageName: azure-service-operators
+channels:
+- currentCSV: azure-service-operator.v0.0.1
+  name: alpha
+defaultChannel: alpha
